@@ -16,6 +16,7 @@ import java.util.Properties;
 
 public class Util {
 
+
     private final static String DB = "jdbc:mysql://localhost:3312/pp";
     private final static String LOGIN = "user";
     private final static String PASS = "password";
