@@ -21,27 +21,7 @@ public class Util {
     private final static String LOGIN = "user";
     private final static String PASS = "password";
 
-    private final static SessionFactory sessionFactory;
-
-    static {
-        try {
-            Properties prop = new Properties();
-            prop.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
-            prop.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3312/pp");
-            prop.setProperty("dialect", "org.hibernate.dialect.MySql8Dialect");
-            prop.setProperty("hibernate.connection.username", "user");
-            prop.setProperty("hibernate.connection.password", "password");
-            prop.setProperty("hibernate.show_sql", "true");
-
-
-            sessionFactory = new Configuration()
-                    .addProperties(prop)
-                    .addAnnotatedClass(User.class)
-                    .buildSessionFactory();
-        } catch (Exception ex) {
-            throw  new ExceptionInInitializerError(ex);
-        }
-    }
+    private static SessionFactory sessionFactory;
 
 
     public static Connection getConnection() throws SQLException {
@@ -49,6 +29,23 @@ public class Util {
     }
 
     public static Session getSession() throws HibernateException {
+        if (sessionFactory == null) {
+            try {
+                Properties prop = new Properties();
+                prop.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
+                prop.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3312/pp");
+                prop.setProperty("dialect", "org.hibernate.dialect.MySql8Dialect");
+                prop.setProperty("hibernate.connection.username", "user");
+                prop.setProperty("hibernate.connection.password", "password");
+                prop.setProperty("hibernate.show_sql", "true");
+                sessionFactory = new Configuration()
+                        .addProperties(prop)
+                        .addAnnotatedClass(User.class)
+                        .buildSessionFactory();
+            } catch (Exception ex) {
+                throw new ExceptionInInitializerError(ex);
+            }
+        }
         return  sessionFactory.openSession();
     }
 

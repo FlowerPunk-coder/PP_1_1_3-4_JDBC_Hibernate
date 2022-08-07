@@ -5,6 +5,7 @@ import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -12,7 +13,6 @@ public class UserDaoHibernateImpl implements UserDao {
     public UserDaoHibernateImpl() {
 
     }
-
     @Override
     public void createUsersTable() {
        runInsideSession( session -> session.createSQLQuery(
@@ -25,12 +25,10 @@ public class UserDaoHibernateImpl implements UserDao {
                UNIQUE (name, lastname));
                """).executeUpdate());
     }
-
     @Override
     public void dropUsersTable() {
        runInsideSession( session -> session.createSQLQuery("DROP TABLE IF EXISTS user;").executeUpdate());
     }
-
     @Override
     public void saveUser(String name, String lastName, byte age) {
         runInsideSession( session -> {
@@ -42,7 +40,6 @@ public class UserDaoHibernateImpl implements UserDao {
             System.out.printf("User с именем – %s добавлен в базу данных\n", name);
         });
     }
-
     @Override
     public void removeUserById(long id) {
         runInsideSession( session -> {
@@ -50,7 +47,6 @@ public class UserDaoHibernateImpl implements UserDao {
             session.delete(user);
         });
     }
-
     @Override
     public List<User> getAllUsers() {
         List<User> users;
@@ -61,17 +57,21 @@ public class UserDaoHibernateImpl implements UserDao {
         }
         return users;
     }
-
     @Override
     public void cleanUsersTable() {
         runInsideSession( session -> session.createNativeQuery("TRUNCATE TABLE user").executeUpdate());
     }
-
     public void runInsideSession(Consumer<Session> consumer) {
+        Transaction transaction = null;
         try (final Session session = Util.getSession()) {
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             consumer.accept(session);
             transaction.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 }

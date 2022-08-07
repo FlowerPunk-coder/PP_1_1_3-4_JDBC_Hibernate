@@ -1,13 +1,14 @@
 package jm.task.core.jdbc.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "user")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
@@ -64,5 +65,18 @@ public class User {
     @Override
     public String toString() {
         return String.format("%s %s, возраст: %d", name, lastName, age);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return name.equals(user.name) && lastName.equals(user.lastName) && age.equals(user.age);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, lastName, age);
     }
 }
