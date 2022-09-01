@@ -37,7 +37,7 @@ public class Util {
                 prop.setProperty("dialect", "org.hibernate.dialect.MySql8Dialect");
                 prop.setProperty("hibernate.connection.username", "user");
                 prop.setProperty("hibernate.connection.password", "password");
-                prop.setProperty("hibernate.show_sql", "true");
+                prop.setProperty("hibernate.show_sql", "false");
                 sessionFactory = new Configuration()
                         .addProperties(prop)
                         .addAnnotatedClass(User.class)
