@@ -58,7 +58,7 @@ public class UserDaoHibernateImpl implements UserDao {
     }
     @Override
     public void cleanUsersTable() {
-        runInsideSession( session -> session.createNativeQuery("TRUNCATE TABLE user").executeUpdate());
+        runInsideSession( session -> session.createNativeQuery("DELETE FROM user").executeUpdate());
     }
     public void runInsideSession(Consumer<Session> consumer) {
         Transaction transaction = null;
